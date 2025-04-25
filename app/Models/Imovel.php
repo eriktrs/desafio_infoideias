@@ -66,10 +66,67 @@ class Imovel
         ]);
     }
 
+    // Método para remover um imóvel específico pelo ID
     public function remover($id)
     {
         // Prepara a consulta SQL para remover um imóvel específico pelo ID
         $stmt = $this->conn->prepare("DELETE FROM imoveis WHERE id = ?");
         return $stmt->execute([$id]);
+    }
+
+    // Método para buscar bairros disponíveis no banco de dados
+    public function getBairros()
+    {
+        // Prepara a consulta SQL para buscar os bairros disponíveis
+        $stmt = $this->conn->query("SELECT DISTINCT bairro FROM imoveis");
+        return $stmt->fetchAll(PDO::FETCH_COLUMN);
+    }
+
+    // Método para buscar imóveis compatíveis com um interesse específico
+    public function match($interesse)
+    {
+        $sql = "SELECT * FROM imoveis INNER JOIN interesse_bairros WHERE tipo = :tipo AND interesse_bairros.bairro = imoveis.bairro";
+
+        $params = [':tipo' => $interesse['tipo_desejado']];
+
+        // Número mínimo de quartos
+        if (!empty($interesse['quartos'])) {
+            $sql .= " AND quartos >= :quartos";
+            $params[':quartos'] = $interesse['quartos'];
+        }
+
+        // Faixa de preço
+        if (!empty($interesse['preco_min'])) {
+            $sql .= " AND preco >= :preco_min";
+            $params[':preco_min'] = $interesse['preco_min'];
+        }
+        if (!empty($interesse['preco_max'])) {
+            $sql .= " AND preco <= :preco_max";
+            $params[':preco_max'] = $interesse['preco_max'];
+        }
+
+        // Lista de bairros 
+        if (!empty($interesse['bairros'])) {
+
+            $bairrosParams = [];
+            foreach ($interesse['bairros'] as $index => $bairro) {
+                $bairrosParams[":bairro{$index}"] = $bairro;
+            }
+
+            // Adiciona os parâmetros dos bairros à consulta SQL
+            $bairroPlaceholders = implode(',', array_keys($bairrosParams));
+            $sql .= " AND bairro IN ($bairroPlaceholders)";
+
+            // Adiciona os parâmetros dos bairros ao array de parâmetros
+            $params = array_merge($params, $bairrosParams);
+        }
+
+        // Debugging: Exibe a consulta SQL e os parâmetros
+        // var_dump($sql, $params);
+
+        // Prepara e executa a consulta SQL
+        $stmt = $this->conn->prepare($sql);
+        $stmt->execute($params);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 }
