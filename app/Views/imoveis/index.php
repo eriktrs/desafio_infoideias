@@ -130,7 +130,7 @@
             </tbody>
         </table>
 
-        <a href="/desafio_infoideias/home.php" class="btn btn-secondary mt-3">Voltar</a>
+        <a href="/desafio_infoideias/home" class="btn btn-secondary mt-3">Voltar</a>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
