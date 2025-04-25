@@ -13,12 +13,14 @@ class Interesse
         $this->conn = Connection::getConnection();
     }
 
+    // Método para buscar todos os interesses no banco de dados
     public function todos()
     {
         // Retorna todos os interesses do banco de dados, ordenados por ID em ordem decrescente
         return $this->conn->query("SELECT * FROM interesses ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    // Método para salvar um novo interesse no banco de dados
     public function salvar($dados)
     {
         // Prepara a consulta SQL para inserir um novo interesse no banco de dados
@@ -52,6 +54,7 @@ class Interesse
         return $id;
     }
 
+    // Método para buscar um interesse específico pelo ID
     public function buscarPorId($id)
     {
         // Prepara a consulta SQL para buscar um interesse específico pelo ID
@@ -73,6 +76,7 @@ class Interesse
         return $interesse;
     }
 
+    // Método para buscar imóveis compatíveis com o interesse
     public function buscarImoveisCompativeis($interesse)
     {
         // Prepara a consulta SQL para buscar imóveis compatíveis com o interesse
@@ -107,5 +111,35 @@ class Interesse
 
         // Retorna os imóveis compatíveis encontrados
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    // Método para atualizar um interesse existente no banco de dados
+    public function atualizar($id, $data)
+    {
+        // Prepara a consulta SQL para atualizar um interesse específico pelo ID
+        $stmt = $this->conn->prepare("
+            UPDATE interesses SET nome = ?, telefone = ?, tipo_imovel = ?, preco_min = ?, preco_max = ?, quartos = ?, bairros = ?
+            WHERE id = ?
+        ");
+
+        // Executa a consulta com os dados fornecidos
+        return $stmt->execute([
+            $data['nome'],
+            $data['telefone'],
+            $data['tipo_imovel'],
+            $data['preco_min'] ?? null,
+            $data['preco_max'] ?? null,
+            $data['quartos'] ?? null,
+            $data['bairros'] ?? null,
+            $id
+        ]);
+    }
+
+    // Método para remover um interesse específico pelo ID
+    public function remover($id)
+    {
+        // Prepara a consulta SQL para remover um interesse específico pelo ID
+        $stmt = $this->conn->prepare("DELETE FROM interesses WHERE id = ?");
+        return $stmt->execute([$id]);
     }
 }
