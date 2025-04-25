@@ -58,9 +58,16 @@ class InteresseController extends Controller
     // Método para exibir o formulário de edição de um interesse existente
     public function edit($id)
     {
-        $model = new Interesse();
-        $interesse = $model->buscarPorId($id);
-        $this->view('interesses/edit', ['interesse' => $interesse]);
+        $interesseModel = new Interesse();
+        $imovelModel = new Imovel();
+
+        $data = [
+            'interesses' => $interesseModel->todos(),
+            'bairros' => $imovelModel->getBairros(),
+            'interesse_bairros' => $interesseModel->getInteresseBairros(),
+        ];
+        
+        $this->view('interesses/edit', $data);
     }
 
     // Método para atualizar um interesse existente no banco de dados
