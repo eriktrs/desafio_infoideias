@@ -1,0 +1,19 @@
+# Ignora arquivos de ambiente
+.env
+
+# Ignora arquivos temporários do sistema operacional
+*.log
+*.cache
+.DS_Store
+Thumbs.db
+
+# Ignora pastas de IDEs
+.vscode/
+.idea/
+
+# Ignora banco de dados exportado temporariamente
+*.sql
+*.sqlite
+
+# Ignora uploads ou arquivos temporários (se usar)
+public/uploads/
