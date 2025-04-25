@@ -24,6 +24,15 @@ class Imovel
     }
 
     // Método para buscar um imóvel específico pelo ID
+    public function procurar($id)
+    {
+        // Prepara a consulta SQL para buscar um imóvel específico pelo ID
+        $stmt = $this->conn->prepare("SELECT * FROM imoveis WHERE id = ?");
+        $stmt->execute([$id]);
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    }
+
+    // Método para salvar um imóvel específico pelo ID
     public function salvar($dados)
     {
         // Prepara a consulta SQL para inserir um novo imóvel no banco de dados
