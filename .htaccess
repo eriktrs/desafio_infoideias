@@ -1,0 +1,5 @@
+RewriteEngine On
+
+# Redireciona tudo que não começa com /public para /public
+RewriteCond %{REQUEST_URI} !^/desafio_infoideias/public/
+RewriteRule ^(.*)$ /desafio_infoideias/public/$1 [L]
