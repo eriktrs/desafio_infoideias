@@ -26,15 +26,41 @@ class Imovel
     // Método para buscar um imóvel específico pelo ID
     public function salvar($dados)
     {
+        // Prepara a consulta SQL para inserir um novo imóvel no banco de dados
         $stmt = $this->conn->prepare("
             INSERT INTO imoveis (tipo, bairro, quartos, preco)
             VALUES (:tipo, :bairro, :quartos, :preco)
         ");
+
+        // Executa a consulta com os dados fornecidos
         $stmt->execute([
             ':tipo' => $dados['tipo'],
             ':bairro' => $dados['bairro'],
             ':quartos' => $dados['quartos'],
             ':preco' => $dados['preco']
         ]);
+    }
+
+    // Método para atualizar um imóvel existente no banco de dados
+    public function atualizar($id, $data)
+    {
+        // Prepara a consulta SQL para atualizar um imóvel específico pelo ID
+        $stmt = $this->conn->prepare("UPDATE imoveis SET tipo = ?, bairro = ?, quartos = ?, preco = ? WHERE id = ?");
+
+        // Executa a consulta com os dados fornecidos
+        return $stmt->execute([
+            $data['tipo'],
+            $data['bairro'],
+            $data['quartos'],
+            $data['preco'],
+            $id
+        ]);
+    }
+
+    public function remover($id)
+    {
+        // Prepara a consulta SQL para remover um imóvel específico pelo ID
+        $stmt = $this->conn->prepare("DELETE FROM imoveis WHERE id = ?");
+        return $stmt->execute([$id]);
     }
 }
