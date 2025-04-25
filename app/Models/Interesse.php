@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use App\Database\Connection;
@@ -19,6 +20,26 @@ class Interesse
         // Retorna todos os interesses do banco de dados, ordenados por ID em ordem decrescente
         return $this->conn->query("SELECT * FROM interesses ORDER BY id DESC")->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Método para buscar os bairros vinculados aos imóveis
+    public function getInteresseBairros()
+    {
+        // Consulta SQL para obter todos os interesses com os bairros associados
+        $sql = "
+         SELECT 
+             interesse_bairros.interesse_id, 
+             interesse_bairros.bairro
+         FROM interesses
+         INNER JOIN interesse_bairros ON interesse_bairros.interesse_id = interesses.id
+         ORDER BY interesses.id;";
+
+        // Executa a consulta SQL
+        $stmt = $this->conn->query($sql);
+
+        // Retorna os resultados como um array associativo
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
 
     // Método para salvar um novo interesse no banco de dados
     public function salvar($dados)
@@ -55,7 +76,7 @@ class Interesse
     }
 
     // Método para buscar um interesse específico pelo ID
-    public function buscarPorId($id)
+    public function procurar($id)
     {
         // Prepara a consulta SQL para buscar um interesse específico pelo ID
         $stmt = $this->conn->prepare("SELECT * FROM interesses WHERE id = ?");
@@ -126,7 +147,7 @@ class Interesse
         return $stmt->execute([
             $data['nome'],
             $data['telefone'],
-            $data['tipo_imovel'],
+            $data['tipo_desejado'],
             $data['preco_min'] ?? null,
             $data['preco_max'] ?? null,
             $data['quartos'] ?? null,
